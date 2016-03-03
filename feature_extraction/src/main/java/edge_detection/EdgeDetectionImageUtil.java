@@ -1,4 +1,4 @@
-package edge_detection_app;
+package edge_detection;
 import javax.imageio.ImageIO;  
 
 import java.awt.image.BufferedImage;  

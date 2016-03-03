@@ -1,7 +1,8 @@
-package edge_detection_app;
+package edge_detection;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -16,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;  
 
-import edge_detection_app.ClientThreadHandler;
+import edge_detection.ClientThreadHandler;
 
 @Controller
 public class AppController {
@@ -46,13 +47,26 @@ public class AppController {
         		//Split the original image into subimages and save to tmp dir
         		EdgeDetectionImageUtil.chunk(image);
             	Thread[] t = new Thread[chunks];
+            	ClientThreadHandler[] cth = new ClientThreadHandler[chunks];
+            	
         		for (int i=0; i<chunks; i++) {
-        			 URL baseUrl = new URL("http://localhost");
-	        	     BufferedImage img = null; 
-	        	     ClientThreadHandler newClient = new ClientThreadHandler(baseUrl, i);
-	        	     t[i] = new Thread(newClient);
+        			
+        			BufferedImage img = ImageIO.read(new File(System.getProperty("user.dir") + "\\tmp\\img" + i + ".jpg"));
+	        	     cth[i] = new ClientThreadHandler(img);
+	        	     t[i] = new Thread(cth[i]);
 	        	     t[i].start();
-	        	     buffImgs[i] = newClient.getImage();
+        		}
+        		for (int j=0; j<chunks; j++) {
+        			while (true) {
+        				if (cth[j].getImage() == null) {
+        					t[j].sleep(1000);
+        				}
+        				else {
+        					buffImgs[j] = cth[j].getImage();
+        					break;
+        				}
+        			}
+	        	     
         		}
         		//Combine the images back into one image
         		EdgeDetectionImageUtil.knit(buffImgs);

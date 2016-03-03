@@ -2,7 +2,7 @@
 
 = Feature Extraction
 
-Test project to run feature extraction in a distributed manner. Docker containers using Java/Spring-boot will be created to run Canny edge detection. Main program will split the image into x number of images, pass them to the Docker containers for processing and recombine them into a final image. 
+Test project to run edge detection in a distributed manner. App uses Java/Spring-boot to upload the image. Main prgram splits the image into x number of images, edge detection is run on each image in a separate thread, then recombined. 
 
 == CV Library
 Using BoofCV
@@ -14,7 +14,4 @@ http://kalanir.blogspot.com/2010/02/how-to-split-image-into-chunks-java.html
 http://kalanir.blogspot.com/2010/02/how-to-merge-multiple-images-into-one.html
 
 
-== ToDo
-1. Dockerize 
-2. Write main app
 
